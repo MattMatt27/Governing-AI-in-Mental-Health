@@ -1,6 +1,7 @@
 // Global variables
 let allBills = [];
 let filteredBills = [];
+let stateChoice, taxonomyChoice, tagChoice;
 let selectedTags = new Set();
 let selectedStates = new Set();
 let selectedTaxonomies = new Set();
@@ -22,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeFilters() {
-    // Initialize tag filter
+    // Initialize tag options
     const tagFilterSelect = document.getElementById('tagFilter');
     Object.entries(tagDefinitions).forEach(([key, info]) => {
         const option = document.createElement('option');
@@ -31,30 +32,47 @@ function initializeFilters() {
         tagFilterSelect.appendChild(option);
     });
     
-    // Add event listeners for all multi-selects
-    tagFilterSelect.addEventListener('change', function() {
-        selectedTags.clear();
-        for (let option of this.selectedOptions) {
-            selectedTags.add(option.value);
-        }
+    // Initialize Choices.js for each multi-select
+    stateChoice = new Choices('#stateFilter', {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Select states...',
+        searchPlaceholderValue: 'Search states...',
+        shouldSort: false,
+        itemSelectText: ''
+    });
+    
+    taxonomyChoice = new Choices('#taxonomyFilter', {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Select taxonomy codes...',
+        searchPlaceholderValue: 'Search codes...',
+        shouldSort: false,
+        itemSelectText: ''
+    });
+    
+    tagChoice = new Choices('#tagFilter', {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Select tags...',
+        searchPlaceholderValue: 'Search tags...',
+        shouldSort: false,
+        itemSelectText: ''
+    });
+    
+    // Add event listeners
+    document.getElementById('stateFilter').addEventListener('change', function(e) {
+        selectedStates = new Set(stateChoice.getValue(true));
         loadBills();
     });
     
-    // State filter listener
-    document.getElementById('stateFilter').addEventListener('change', function() {
-        selectedStates.clear();
-        for (let option of this.selectedOptions) {
-            selectedStates.add(option.value);
-        }
+    document.getElementById('taxonomyFilter').addEventListener('change', function(e) {
+        selectedTaxonomies = new Set(taxonomyChoice.getValue(true));
         loadBills();
     });
     
-    // Taxonomy filter listener
-    document.getElementById('taxonomyFilter').addEventListener('change', function() {
-        selectedTaxonomies.clear();
-        for (let option of this.selectedOptions) {
-            selectedTaxonomies.add(option.value);
-        }
+    document.getElementById('tagFilter').addEventListener('change', function(e) {
+        selectedTags = new Set(tagChoice.getValue(true));
         loadBills();
     });
 }
@@ -67,13 +85,13 @@ async function loadStates() {
         
         const states = await response.json();
         
-        const stateFilter = document.getElementById('stateFilter');
-        states.forEach(state => {
-            const option = document.createElement('option');
-            option.value = state;
-            option.textContent = state;
-            stateFilter.appendChild(option);
-        });
+        stateChoice.clearStore();
+        const stateOptions = states.map(state => ({
+            value: state,
+            label: state
+        }));
+        stateChoice.setChoices(stateOptions, 'value', 'label', true);
+        
     } catch (error) {
         console.error('Error loading states:', error);
         showError('Failed to load states');

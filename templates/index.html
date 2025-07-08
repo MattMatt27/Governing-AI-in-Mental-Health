@@ -7,9 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 <body class="min-h-screen bg-gray-50">
     <div class="max-w-7xl mx-auto p-4">
@@ -37,7 +37,7 @@
                 <!-- State Filter -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">State</label>
-                    <select id="stateFilter" multiple class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" style="height: 38px; overflow-y: auto;">
+                    <select id="stateFilter" multiple>
                         <!-- Options will be populated by JavaScript -->
                     </select>
                 </div>
@@ -50,7 +50,7 @@
                             <i class="fas fa-info-circle"></i>
                         </button>
                     </label>
-                    <select id="taxonomyFilter" multiple class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" style="height: 38px; overflow-y: auto;">
+                    <select id="taxonomyFilter" multiple>
                         <option value="E">E - Explicit</option>
                         <option value="SR">SR - Substantively Relevant</option>
                         <option value="II">II - Incidentally Implicative</option>
@@ -59,7 +59,7 @@
                     </select>
                 </div>
 
-                <!-- NEW: Tag Filter Dropdown -->
+                <!-- Tag Filter -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
                         Tags
@@ -67,17 +67,16 @@
                             <i class="fas fa-info-circle"></i>
                         </button>
                     </label>
-                    <select id="tagFilter" multiple class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" style="height: 38px; overflow-y: auto;">
+                    <select id="tagFilter" multiple>
                         <!-- Options will be populated by JavaScript -->
                     </select>
-                    <p class="text-xs text-gray-500 mt-1">Ctrl/Cmd+click for multiple</p>
                 </div>
 
                 <!-- Hide NR Toggle -->
                 <div class="flex items-end">
                     <label class="flex items-center">
                         <input type="checkbox" id="hideNR" checked class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                        <span class="text-sm font-medium text-gray-700">Hide Excluded Bills</span>
+                        <span class="text-sm font-medium text-gray-700">Hide NR Bills</span>
                     </label>
                 </div>
             </div>
