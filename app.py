@@ -178,6 +178,7 @@ def get_bills():
     try:
         # Get query parameters
         states = request.args.getlist('state[]')
+        statuses = request.args.getlist('status[]')
         taxonomy_codes = request.args.getlist('taxonomy_code[]')
         search = request.args.get('search', '')
         hide_excluded = request.args.get('hide_excluded', 'true').lower() == 'true'
@@ -192,6 +193,16 @@ def get_bills():
             placeholders = ','.join(['%s'] * len(states))
             where_conditions.append(f"state IN ({placeholders})")
             params.extend(states)
+
+        # Handle multiple statuses
+        if statuses:
+            if '' in statuses:
+                statuses.remove('')
+                status_condition = f"(status IN ({','.join(['%s'] * len(statuses))}) OR status IS NULL)"
+            else:
+                status_condition = f"status IN ({','.join(['%s'] * len(statuses))})"
+            where_conditions.append(status_condition)
+            params.extend(statuses)
         
         # Handle multiple taxonomy codes
         if taxonomy_codes:
@@ -328,6 +339,22 @@ def get_states():
     except Exception as e:
         print(f"Error in get_states: {e}")
         return jsonify({'error': 'Failed to fetch states'}), 500
+
+@app.route('/api/statuses')
+def get_statuses():
+    """Get list of all unique statuses"""
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT DISTINCT status FROM bill_data WHERE status IS NOT NULL ORDER BY status")
+        statuses = [row['status'] for row in cur.fetchall()]
+        cur.close()
+        conn.close()
+        return jsonify(statuses)
+    
+    except Exception as e:
+        print(f"Error in get_statuses: {e}")
+        return jsonify({'error': 'Failed to fetch statuses'}), 500
 
 @app.route('/health')
 def health_check():

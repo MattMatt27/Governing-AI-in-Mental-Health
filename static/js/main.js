@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     populateDefinitions();
     
     // Add event listeners
-    document.getElementById('searchInput').addEventListener('input', debounce(loadBills, 300));
+    // document.getElementById('searchInput').addEventListener('input', debounce(loadBills, 300));
+    document.getElementById('statusFilter').addEventListener('change', loadBills);
     document.getElementById('stateFilter').addEventListener('change', loadBills);
     document.getElementById('taxonomyFilter').addEventListener('change', loadBills);
     document.getElementById('hideExcluded').addEventListener('change', loadBills);
@@ -38,6 +39,15 @@ function initializeFilters() {
         placeholder: true,
         placeholderValue: 'Select states...',
         searchPlaceholderValue: 'Search states...',
+        shouldSort: false,
+        itemSelectText: ''
+    });
+
+    statusChoice = new Choices('#statusFilter', {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Select statuses...',
+        searchPlaceholderValue: 'Search statuses...',
         shouldSort: false,
         itemSelectText: ''
     });
@@ -65,6 +75,11 @@ function initializeFilters() {
         selectedStates = new Set(stateChoice.getValue(true));
         loadBills();
     });
+
+    document.getElementById('statusFilter').addEventListener('change', function(e) {
+        selectedStatuses = new Set(statusChoice.getValue(true));
+        loadBills();
+    });
     
     document.getElementById('taxonomyFilter').addEventListener('change', function(e) {
         selectedTaxonomies = new Set(taxonomyChoice.getValue(true));
@@ -75,6 +90,28 @@ function initializeFilters() {
         selectedTags = new Set(tagChoice.getValue(true));
         loadBills();
     });
+}
+
+// Load statuses for multi-select
+async function loadStatuses() {
+    try {
+        const response = await fetch('/api/statuses');
+        if (!response.ok) throw new Error('Failed to load statuses');
+        
+        const statuses = await response.json();
+        
+        // Clear existing choices and add new ones
+        statusChoice.clearStore();
+        const statusOptions = statuses.map(status => ({
+            value: status,
+            label: status || 'No Status'
+        }));
+        statusChoice.setChoices(statusOptions, 'value', 'label', true);
+        
+    } catch (error) {
+        console.error('Error loading statuses:', error);
+        showError('Failed to load statuses');
+    }
 }
 
 // Load states for multi-select
@@ -105,12 +142,17 @@ async function loadBills() {
     const params = new URLSearchParams();
     
     // Add search filter
-    const search = document.getElementById('searchInput').value;
-    if (search) params.append('search', search);
+    // const search = document.getElementById('searchInput').value;
+    // if (search) params.append('search', search);
     
     // Add selected states
     if (selectedStates.size > 0) {
         selectedStates.forEach(state => params.append('state[]', state));
+    }
+
+    // Add selected statuses
+    if (selectedStatuses.size > 0) {
+        selectedStatuses.forEach(status => params.append('status[]', status));
     }
     
     // Add selected taxonomies
@@ -232,6 +274,10 @@ function updateSummary() {
     
     if (selectedStates.size > 0) {
         filters.push(`States: ${Array.from(selectedStates).join(', ')}`);
+    }
+
+    if (selectedStatuses.size > 0) {
+        filters.push(`Status: ${Array.from(selectedStatuses).join(', ')}`);
     }
     
     if (selectedTaxonomies.size > 0) {
