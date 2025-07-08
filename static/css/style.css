@@ -36,6 +36,19 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.choices__inner {
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+}
+
+/* Align checkbox container */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+}
+
 /* Table row hover */
 tbody tr {
     transition: background-color 0.15s ease-in-out;

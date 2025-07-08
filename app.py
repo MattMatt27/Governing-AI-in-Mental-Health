@@ -180,7 +180,7 @@ def get_bills():
         states = request.args.getlist('state[]')
         taxonomy_codes = request.args.getlist('taxonomy_code[]')
         search = request.args.get('search', '')
-        hide_nr = request.args.get('hide_nr', 'true').lower() == 'true'
+        hide_excluded = request.args.get('hide_excluded', 'true').lower() == 'true'
         
         # Get selected tags
         selected_tags = request.args.getlist('tags[]')
@@ -199,8 +199,8 @@ def get_bills():
             where_conditions.append(f"taxonomy_code IN ({placeholders})")
             params.extend(taxonomy_codes)
         
-        if hide_nr:
-            where_conditions.append("taxonomy_code != 'NR'")
+        if hide_excluded:
+            where_conditions.append("taxonomy_code NOT IN ('NR', 'CB')")
         
         if search:
             where_conditions.append("(bill ILIKE %s OR state ILIKE %s)")

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('searchInput').addEventListener('input', debounce(loadBills, 300));
     document.getElementById('stateFilter').addEventListener('change', loadBills);
     document.getElementById('taxonomyFilter').addEventListener('change', loadBills);
-    document.getElementById('hideNR').addEventListener('change', loadBills);
+    document.getElementById('hideExcluded').addEventListener('change', loadBills);
 });
 
 function initializeFilters() {
@@ -118,9 +118,9 @@ async function loadBills() {
         selectedTaxonomies.forEach(taxonomy => params.append('taxonomy_code[]', taxonomy));
     }
     
-    // Hide NR
-    const hideNR = document.getElementById('hideNR').checked;
-    params.append('hide_nr', hideNR);
+    // Hide excluded bills (CB and NR)
+    const hideExcluded = document.getElementById('hideExcluded').checked;
+    params.append('hide_excluded', hideExcluded);
     
     // Add selected tags
     selectedTags.forEach(tag => params.append('tags[]', tag));
