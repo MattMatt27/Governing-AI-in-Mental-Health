@@ -1,9 +1,10 @@
 // Global variables
 let allBills = [];
 let filteredBills = [];
-let stateChoice, taxonomyChoice, tagChoice;
+let stateChoice, taxonomyChoice, tagChoice; statusChoice;
 let selectedTags = new Set();
 let selectedStates = new Set();
+let selectedStatuses = new Set();
 let selectedTaxonomies = new Set();
 let sortField = 'state';
 let sortDirection = 'asc';
