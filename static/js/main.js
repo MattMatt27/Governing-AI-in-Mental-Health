@@ -12,6 +12,7 @@ let sortDirection = 'asc';
 document.addEventListener('DOMContentLoaded', function() {
     initializeFilters();
     loadStates();
+    loadStatuses();
     loadBills();
     populateDefinitions();
     
