@@ -1,7 +1,7 @@
 // Global variables
 let allBills = [];
 let filteredBills = [];
-let stateChoice, taxonomyChoice, tagChoice; statusChoice;
+let stateChoice, taxonomyChoice, tagChoice, statusChoice;
 let selectedTags = new Set();
 let selectedStates = new Set();
 let selectedStatuses = new Set();
@@ -102,7 +102,6 @@ async function loadStatuses() {
         
         const statuses = await response.json();
         
-        // Clear existing choices and add new ones
         statusChoice.clearStore();
         const statusOptions = statuses.map(status => ({
             value: status,
