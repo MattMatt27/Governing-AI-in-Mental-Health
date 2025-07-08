@@ -2,6 +2,8 @@
 let allBills = [];
 let filteredBills = [];
 let selectedTags = new Set();
+let selectedStates = new Set();
+let selectedTaxonomies = new Set();
 let sortField = 'state';
 let sortDirection = 'asc';
 
@@ -19,10 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('hideNR').addEventListener('change', loadBills);
 });
 
-// Initialize tag filters
 function initializeFilters() {
+    // Initialize tag filter
     const tagFilterSelect = document.getElementById('tagFilter');
-    
     Object.entries(tagDefinitions).forEach(([key, info]) => {
         const option = document.createElement('option');
         option.value = key;
@@ -30,19 +31,35 @@ function initializeFilters() {
         tagFilterSelect.appendChild(option);
     });
     
-    $('#tagFilter').select2({
-        placeholder: 'Select tags...',
-        allowClear: true,
-        width: '100%'
-    }).on('change', function() {
+    // Add event listeners for all multi-selects
+    tagFilterSelect.addEventListener('change', function() {
         selectedTags.clear();
-        const selected = $(this).val() || [];
-        selected.forEach(tag => selectedTags.add(tag));
+        for (let option of this.selectedOptions) {
+            selectedTags.add(option.value);
+        }
+        loadBills();
+    });
+    
+    // State filter listener
+    document.getElementById('stateFilter').addEventListener('change', function() {
+        selectedStates.clear();
+        for (let option of this.selectedOptions) {
+            selectedStates.add(option.value);
+        }
+        loadBills();
+    });
+    
+    // Taxonomy filter listener
+    document.getElementById('taxonomyFilter').addEventListener('change', function() {
+        selectedTaxonomies.clear();
+        for (let option of this.selectedOptions) {
+            selectedTaxonomies.add(option.value);
+        }
         loadBills();
     });
 }
 
-// Load states for dropdown
+// Load states for multi-select
 async function loadStates() {
     try {
         const response = await fetch('/api/states');
@@ -69,15 +86,22 @@ async function loadBills() {
     
     const params = new URLSearchParams();
     
-    // Add filters
+    // Add search filter
     const search = document.getElementById('searchInput').value;
-    const state = document.getElementById('stateFilter').value;
-    const taxonomyCode = document.getElementById('taxonomyFilter').value;
-    const hideNR = document.getElementById('hideNR').checked;
-    
     if (search) params.append('search', search);
-    if (state !== 'all') params.append('state', state);
-    if (taxonomyCode !== 'all') params.append('taxonomy_code', taxonomyCode);
+    
+    // Add selected states
+    if (selectedStates.size > 0) {
+        selectedStates.forEach(state => params.append('state[]', state));
+    }
+    
+    // Add selected taxonomies
+    if (selectedTaxonomies.size > 0) {
+        selectedTaxonomies.forEach(taxonomy => params.append('taxonomy_code[]', taxonomy));
+    }
+    
+    // Hide NR
+    const hideNR = document.getElementById('hideNR').checked;
     params.append('hide_nr', hideNR);
     
     // Add selected tags
@@ -186,10 +210,22 @@ function getTaxonomyColor(code) {
 // Update results summary
 function updateSummary() {
     const summary = document.getElementById('resultsSummary');
-    const tagText = selectedTags.size > 0 
-        ? ` with tags: ${Array.from(selectedTags).map(t => tagDefinitions[t].name).join(', ')}`
-        : '';
-    summary.innerHTML = `Showing <span class="font-semibold">${allBills.length}</span> bills${tagText}`;
+    let filters = [];
+    
+    if (selectedStates.size > 0) {
+        filters.push(`States: ${Array.from(selectedStates).join(', ')}`);
+    }
+    
+    if (selectedTaxonomies.size > 0) {
+        filters.push(`Taxonomy: ${Array.from(selectedTaxonomies).join(', ')}`);
+    }
+    
+    if (selectedTags.size > 0) {
+        filters.push(`Tags: ${Array.from(selectedTags).map(t => tagDefinitions[t].name).join(', ')}`);
+    }
+    
+    const filterText = filters.length > 0 ? ` (${filters.join('; ')})` : '';
+    summary.innerHTML = `Showing <span class="font-semibold">${allBills.length}</span> bills${filterText}`;
 }
 
 // Sort table

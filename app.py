@@ -177,25 +177,27 @@ def get_bills():
     """API endpoint to get bills with filters"""
     try:
         # Get query parameters
-        state = request.args.get('state')
-        taxonomy_code = request.args.get('taxonomy_code')
+        states = request.args.getlist('state[]')
+        taxonomy_codes = request.args.getlist('taxonomy_code[]')
         search = request.args.get('search', '')
         hide_nr = request.args.get('hide_nr', 'true').lower() == 'true'
         
         # Get selected tags
         selected_tags = request.args.getlist('tags[]')
-        
-        # Build WHERE clause
         where_conditions = []
         params = []
         
-        if state and state != 'all':
-            where_conditions.append("state = %s")
-            params.append(state)
+        # Handle multiple states
+        if states:
+            placeholders = ','.join(['%s'] * len(states))
+            where_conditions.append(f"state IN ({placeholders})")
+            params.extend(states)
         
-        if taxonomy_code and taxonomy_code != 'all':
-            where_conditions.append("taxonomy_code = %s")
-            params.append(taxonomy_code)
+        # Handle multiple taxonomy codes
+        if taxonomy_codes:
+            placeholders = ','.join(['%s'] * len(taxonomy_codes))
+            where_conditions.append(f"taxonomy_code IN ({placeholders})")
+            params.extend(taxonomy_codes)
         
         if hide_nr:
             where_conditions.append("taxonomy_code != 'NR'")
