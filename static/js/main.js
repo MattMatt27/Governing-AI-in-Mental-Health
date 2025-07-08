@@ -21,28 +21,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Initialize tag filters
 function initializeFilters() {
-    const tagFiltersDiv = document.getElementById('tagFilters');
+    const tagFilterSelect = document.getElementById('tagFilter');
     
     Object.entries(tagDefinitions).forEach(([key, info]) => {
-        const button = document.createElement('button');
-        button.className = 'tag-button px-3 py-1 rounded-full text-xs font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300';
-        button.textContent = info.name;
-        button.dataset.tag = key;
-        button.onclick = () => toggleTag(key, button);
-        tagFiltersDiv.appendChild(button);
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = info.name;
+        tagFilterSelect.appendChild(option);
     });
-}
-
-// Toggle tag selection
-function toggleTag(tag, button) {
-    if (selectedTags.has(tag)) {
-        selectedTags.delete(tag);
-        button.className = 'tag-button px-3 py-1 rounded-full text-xs font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300';
-    } else {
-        selectedTags.add(tag);
-        button.className = 'tag-button px-3 py-1 rounded-full text-xs font-medium transition-colors bg-blue-600 text-white';
-    }
-    loadBills();
+    
+    $('#tagFilter').select2({
+        placeholder: 'Select tags...',
+        allowClear: true,
+        width: '100%'
+    }).on('change', function() {
+        selectedTags.clear();
+        const selected = $(this).val() || [];
+        selected.forEach(tag => selectedTags.add(tag));
+        loadBills();
+    });
 }
 
 // Load states for dropdown
