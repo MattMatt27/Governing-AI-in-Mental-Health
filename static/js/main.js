@@ -1,11 +1,12 @@
 // Global variables
 let allBills = [];
 let filteredBills = [];
-let stateChoice, taxonomyChoice, tagChoice, statusChoice;
+let stateChoice, taxonomyChoice, tagChoice, statusChoice, sessionChoice;
 let selectedTags = new Set();
 let selectedStates = new Set();
 let selectedStatuses = new Set();
 let selectedTaxonomies = new Set();
+let selectedSessions = new Set();
 let sortField = 'state';
 let sortDirection = 'asc';
 
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFilters();
     loadStates();
     loadStatuses();
+    loadSessions();
     loadBills();
     populateDefinitions();
     
@@ -62,6 +64,15 @@ function initializeFilters() {
         shouldSort: false,
         itemSelectText: ''
     });
+
+    sessionChoice = new Choices('#sessionFilter', {
+        removeItemButton: true,
+        placeholder: true,
+        placeholderValue: 'Select session years...',
+        searchPlaceholderValue: 'Search years...',
+        shouldSort: false,
+        itemSelectText: ''
+    });
     
     tagChoice = new Choices('#tagFilter', {
         removeItemButton: true,
@@ -85,6 +96,11 @@ function initializeFilters() {
     
     document.getElementById('taxonomyFilter').addEventListener('change', function(e) {
         selectedTaxonomies = new Set(taxonomyChoice.getValue(true));
+        loadBills();
+    });
+
+    document.getElementById('sessionFilter').addEventListener('change', function(e) {
+        selectedSessions = new Set(sessionChoice.getValue(true));
         loadBills();
     });
     
@@ -136,6 +152,27 @@ async function loadStates() {
     }
 }
 
+// Load sessions for multi-select
+async function loadSessions() {
+    try {
+        const response = await fetch('/api/sessions');
+        if (!response.ok) throw new Error('Failed to load sessions');
+        
+        const sessions = await response.json();
+        
+        sessionChoice.clearStore();
+        const sessionOptions = sessions.map(session => ({
+            value: session.toString(),
+            label: session.toString()
+        }));
+        sessionChoice.setChoices(sessionOptions, 'value', 'label', true);
+        
+    } catch (error) {
+        console.error('Error loading sessions:', error);
+        showError('Failed to load sessions');
+    }
+}
+
 // Load bills from API
 async function loadBills() {
     showLoading(true);
@@ -159,6 +196,11 @@ async function loadBills() {
     // Add selected taxonomies
     if (selectedTaxonomies.size > 0) {
         selectedTaxonomies.forEach(taxonomy => params.append('taxonomy_code[]', taxonomy));
+    }
+
+    // Add selected sessions
+    if (selectedSessions.size > 0) {
+        selectedSessions.forEach(session => params.append('session[]', session));
     }
     
     // Hide excluded bills (CB and NR)
@@ -207,7 +249,7 @@ function displayBills() {
     if (sortedBills.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                <td colspan="7" class="px-6 py-8 text-center text-gray-500">
                     No bills found matching your criteria
                 </td>
             </tr>
@@ -228,6 +270,9 @@ function displayBills() {
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 ${escapeHtml(bill.bill)}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${escapeHtml(bill.session ? bill.session.toString() : 'N/A')}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                 ${escapeHtml(bill.status || 'N/A')}
@@ -283,6 +328,10 @@ function updateSummary() {
     
     if (selectedTaxonomies.size > 0) {
         filters.push(`Taxonomy: ${Array.from(selectedTaxonomies).join(', ')}`);
+    }
+
+    if (selectedSessions.size > 0) {
+        filters.push(`Session: ${Array.from(selectedSessions).join(', ')}`);
     }
     
     if (selectedTags.size > 0) {
