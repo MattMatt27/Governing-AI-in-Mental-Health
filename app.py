@@ -180,6 +180,7 @@ def get_bills():
         states = request.args.getlist('state[]')
         statuses = request.args.getlist('status[]')
         taxonomy_codes = request.args.getlist('taxonomy_code[]')
+        sessions = request.args.getlist('session[]')
         search = request.args.get('search', '')
         hide_excluded = request.args.get('hide_excluded', 'true').lower() == 'true'
         
@@ -209,6 +210,12 @@ def get_bills():
             placeholders = ','.join(['%s'] * len(taxonomy_codes))
             where_conditions.append(f"taxonomy_code IN ({placeholders})")
             params.extend(taxonomy_codes)
+        
+        # Handle multiple sessions
+        if sessions:
+            placeholders = ','.join(['%s'] * len(sessions))
+            where_conditions.append(f"session IN ({placeholders})")
+            params.extend(sessions)
         
         if hide_excluded:
             where_conditions.append("taxonomy_code NOT IN ('NR', 'CB')")
@@ -355,6 +362,22 @@ def get_statuses():
     except Exception as e:
         print(f"Error in get_statuses: {e}")
         return jsonify({'error': 'Failed to fetch statuses'}), 500
+
+@app.route('/api/sessions')
+def get_sessions():
+    """Get list of all unique sessions"""
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT DISTINCT session FROM bill_data WHERE session IS NOT NULL ORDER BY session")
+        sessions = [row['session'] for row in cur.fetchall()]
+        cur.close()
+        conn.close()
+        return jsonify(sessions)
+    
+    except Exception as e:
+        print(f"Error in get_sessions: {e}")
+        return jsonify({'error': 'Failed to fetch sessions'}), 500
 
 @app.route('/health')
 def health_check():
