@@ -1,170 +1,99 @@
-# Mental Health AI Bill Tracker
+# Governing AI in Mental Health: A 50-State Legislative Analysis
 
-A Flask web application for tracking and analyzing state legislation related to AI in mental health services.
+## Interactive Database for JMIR Mental Health Publication
 
-## Features
+This repository contains the supplementary interactive database accompanying our JMIR Mental Health publication analyzing state-level AI legislation relevant to mental health services across all 50 US states from January 2022 through May 2025.
 
-- **Search and Filter**: Search bills by state, bill number, or taxonomy code
-- **Tag-based Filtering**: Filter bills by 25 different regulatory tags
-- **Taxonomy Classification**: View bills categorized by their relevance to mental health AI
-- **Interactive UI**: Modern, responsive interface with modal popups for definitions
-- **Real-time Updates**: Connected to PostgreSQL database for live data
+## 📊 Database Overview
 
-## Security Notice
+From an initial review of **793 AI-related bills**, we identified and analyzed **143 bills** with potential impact on mental health AI. This searchable database allows researchers, policymakers, and clinicians to:
 
-This repository does not contain any sensitive information. Database credentials should be configured through environment variables.
+- **Explore legislative trends** across all 50 states
+- **Identify policy gaps** in mental health AI governance  
+- **Track regulatory patterns** using our taxonomy system
+- **Filter bills** across 25 distinct policy dimensions
+- **Access direct links** to full bill text on LegiScan
 
-## Installation
+## 🔍 Key Features
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/mh-ai-bill-tracker.git
-cd mh-ai-bill-tracker
-```
+### Four-Tier Taxonomy System
 
-2. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+| Code | Category | Definition | Inclusion Criteria |
+|------|----------|------------|-------------------|
+| **E** | Explicit | Bills that explicitly reference mental health, behavioral health, psychotherapy, or related services in the context of AI development, regulation, or application | The bill directly names mental health uses of AI, specific clinical applications, or mental health contexts as targets of regulation, policy, or oversight |
+| **SR** | Substantively Relevant | Bills that govern MH-AI in ways that have direct, foreseeable implications for mental health services or stakeholders, even if mental health is not explicitly or substantively discussed in the bill's text | The bill regulates MH-AI in a way that predictably impacts mental health uses, delivery, or providers, regardless of whether mental health is explicitly mentioned |
+| **II** | Incidentally Implicative | Bills that are broadly written and might include MH-AI, but only in a general or indirect way. Clinical impact is uncertain or minimal | MH-AI falls or could fall under the bill's scope, but direct mechanisms or practical effects at the clinical level are not apparent or minimal |
+| **CB** | Companion Bill | Bills that are companion legislation to other bills in the dataset | The bill is a companion to another bill, typically in a different chamber of the legislature |
+| **NR** | Not Relevant | Bills with no meaningful relationship to MH-AI services, even under expansive interpretations | The bill does not touch on mental health services |
 
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+### 25 Policy Dimensions
 
-4. Set up environment variables:
-```bash
-cp .env.example .env
-# Edit .env with your database URL for local development
-```
+| Dimension | Description |
+|-----------|-------------|
+| **Civil Penalties** | Applies any kind of civil penalty to violators (e.g., non-criminal penalties such as system suspension, civil fines, creation of private right-of-action to sue, profit disgorgement, suspension of noncompliant systems, punitive monitoring, or application of a separate civil enforcement statute) |
+| **Criminal Penalties** | Applies any kind of criminal penalty to violators (e.g., criminal fines, incarceration, misdemeanor/felony designations) |
+| **Licensing Board Oversight** | Applies any kind of oversight by state professional licensing boards (e.g., requiring board approval of MH-AI systems used in diagnosis/treatment or allowing boards to discipline individuals or systems) |
+| **Disclosure/Consent** | Implements any requirement to disclose use or features of the AI system (including disclaimers) and/or consent to the use of such systems/features or the ability to revoke consent |
+| **Discrimination/Bias** | Implements any requirement regarding discrimination, bias, or fairness |
+| **Risk Classification** | Implements or defines the scope of the law by a risk classification system (e.g., "high risk" AI system, consequential decisions, and similar frameworks) |
+| **Data Protection** | Implements any requirements for data privacy, data security, or data retention/deletion (e.g., encryption requirements, secure storage, or data purging policies) |
+| **Prescribing** | Applies any requirements or waivers regarding prescriptions |
+| **Practitioner Responsibilities** | Applies any kind of requirements on practitioners—or waivers or exemptions—related to their use of AI systems |
+| **Monitoring** | Applies any kind of monitoring requirements for MH-AI (e.g., live supervision, submission to audits/documentation processes, generation of reports, or post-market surveillance) |
+| **Research** | Pertains to or would affect mental health research (e.g., data collection, consent requirements, ethical guidelines, exemptions for legitimate research use, etc.) |
+| **Consumer Protection** | Provisions concerning fraudulent, manipulative, or deceptive use of MH-AI systems, including in advertising |
+| **Payments/Insurance** | Regulations on insurance coverage, reimbursement, and payment models |
+| **Human-in-the-Loop** | Explicitly requires a human to monitor, approve, or participate in an essential part of the provision of the MH-AI service |
+| **Pre-Market Review** | Implements requirements for any level of regulatory review prior to the AI product being offered/implemented (e.g., state commission approval, FDA approval, submission of risk assessments, etc.) |
+| **Post-Market Review** | Implements requirements for any level of scheduled/routine review after the AI product has been marketed/implemented (e.g., post-market surveillance, auditing, risk assessments, efficacy reviews, etc.), subject to regulatory oversight |
+| **Transparency** | Implements requirements involving public or patient rights to access AI system data (e.g., requests to obtain data, public inventories of AI systems, publication or transparency requirements) |
+| **Opt Out** | Provides for the ability to opt out of AI services in favor of receiving equivalent human-delivered health services |
+| **Pilot/Sandbox** | Provides for regulatory pilot programs or sandbox systems, allowing AI products to be tested and receive feedback from regulators prior to full marketing |
+| **Malpractice/Liability** | Pertains to medical malpractice involving AI, including liability allocation for AI-related harm (e.g., standards of evidence, assigning responsibility to deployers, developers, practitioners, or manufacturers, liability shields or limitations, use of MH-AI records and data in litigation, etc.) |
+| **Event Reporting** | Creates a system for reporting adverse events, near misses, or other safety events involving MH-AI |
+| **Vulnerable Populations** | Creates any responsibilities related to vulnerable populations (e.g., elderly, children, disabled, foreign-language speakers, etc.), such as mandated reporting requirements, accessibility requirements, or parental controls |
+| **Meta/Biometric Data** | Regulates biometric data, behavioral data, or metadata used by MH-AI systems |
+| **Special Purpose Entities** | Creates or assigns committees, subcommittees, task forces, or similar special-purpose bodies pertaining to MH-AI |
+| **Safety Standards** | Pertains to safety standards for MH-AI (e.g., human overrides, emergency protocols, or prohibitions on high-risk uses) or safety-based exceptions to other requirements (e.g., bypassing procedures when delays risk harm, allowing immediate protective actions) |
 
-5. Run the application locally:
-```bash
-python app.py
-```
+## 📖 Read the Full Paper
 
-## Deployment on Railway
+**[Access the preprint on JMIR](https://s3.ca-central-1.amazonaws.com/assets.jmir.org/assets/preprints/preprint-80739-submitted.pdf)**
 
-Railway is the recommended deployment platform for this application.
+## 🌐 Access the Live Database
 
-### Prerequisites
-- A Railway account (sign up at https://railway.app)
-- A GitHub account with this repository
+Visit the interactive database [here](https://governing-ai-in-mental-health.digitalpsychpapers.org/)
 
-### Deployment Steps
+## 📅 Data Collection Period
 
-1. **Fork or push this repository to GitHub**
+January 1, 2022 through May 19, 2025
 
-2. **Create a new project on Railway:**
-   - Go to https://railway.app/new
-   - Choose "Deploy from GitHub repo"
-   - Select your repository
+## ⚖️ Important Notice
 
-3. **Add PostgreSQL database:**
-   - In your Railway project, click "New Service"
-   - Choose "Database" → "Add PostgreSQL"
-   - Railway will automatically create the database
+This database is provided for informational and educational purposes only. It does not constitute legal advice or analysis. Laws and regulations change frequently, and the status of bills may have changed since data collection. For legal advice regarding specific situations, please consult with a qualified attorney licensed in the relevant jurisdiction.
 
-4. **Connect database to your app:**
-   - Click on your app service
-   - Go to "Variables" tab
-   - Click "Add Reference Variable"
-   - Select your PostgreSQL database
-   - Choose `DATABASE_URL`
-   - Railway will automatically inject the connection string
+## 📬 Contact
 
-5. **Deploy:**
-   - Railway will automatically deploy your app
-   - Your app will be available at `https://your-app-name.railway.app`
+For questions about the research or database, please contact the corresponding author through the publication.
 
-### Environment Variables on Railway
+## 🙏 Acknowledgments
 
-Railway automatically provides:
-- `DATABASE_URL` - PostgreSQL connection string (when you add the database)
-- `PORT` - Port for your application
+This research was conducted as part of a comprehensive analysis of AI governance in mental healthcare. We thank all contributors and reviewers who made this work possible.
 
-No manual configuration needed!
+This interactive database website was developed with assistance from [Claude Code](https://claude.ai/code), Anthropic's AI coding assistant.
 
-### Custom Domain (Optional)
+## Citation
 
-1. In your Railway service settings, go to "Settings" → "Domains"
-2. Add your custom domain
-3. Update your DNS records as instructed
+If you use this database in your research, please cite our paper:
 
-## Local Development
-
-For local development with a remote Railway database:
-
-1. Install Railway CLI:
-```bash
-npm install -g @railway/cli
-```
-
-2. Login to Railway:
-```bash
-railway login
-```
-
-3. Link your project:
-```bash
-railway link
-```
-
-4. Run locally with Railway environment:
-```bash
-railway run python app.py
-```
-
-## Project Structure
-
-```
-mh-ai-bill-tracker/
-├── app.py                  # Main Flask application
-├── requirements.txt        # Python dependencies
-├── .env.example           # Environment variables template
-├── railway.toml          # Railway configuration
-├── README.md             # Project documentation
-├── .gitignore           # Git ignore file
-├── static/              # Static files
-│   ├── css/
-│   │   └── style.css   # Custom styles
-│   └── js/
-│       └── main.js     # Frontend JavaScript
-└── templates/          # HTML templates
-    └── index.html      # Main page template
-```
-
-## API Endpoints
-
-- `GET /` - Main web interface
-- `GET /api/bills` - Get filtered bills data
-- `GET /api/stats` - Get statistics
-- `GET /api/states` - Get list of states
-- `GET /health` - Health check endpoint
-
-## Technologies Used
-
-- **Backend**: Flask, PostgreSQL, psycopg2
-- **Frontend**: HTML, Tailwind CSS, Vanilla JavaScript
-- **Deployment**: Railway
-- **Database**: PostgreSQL
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+[Citation format will be added upon publication]
 
 ## License
 
-MIT License - see LICENSE file for details
+This database and accompanying code are provided under the MIT License. See LICENSE file for details.
 
-## Support
+## Related Resources
 
-For issues or questions:
-- Open an issue on GitHub
-- Check Railway documentation at https://docs.railway.app
-- Review Flask documentation at https://flask.palletsprojects.com
+- [JMIR Mental Health](https://mental.jmir.org/)
+- [LegiScan](https://legiscan.com/) - Source for full bill text
+- [National Conference of State Legislatures](https://www.ncsl.org/) - Additional state policy resources
