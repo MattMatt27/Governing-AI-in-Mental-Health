@@ -58,7 +58,7 @@ From an initial review of **793 AI-related bills**, we identified and analyzed *
 
 ## 📖 Read the Full Paper
 
-**[Access the preprint on JMIR](https://s3.ca-central-1.amazonaws.com/assets.jmir.org/assets/preprints/preprint-80739-submitted.pdf)**
+**[Access the paper on JMIR](https://mental.jmir.org/2025/1/e80739/)**
 
 ## 🌐 Access the Live Database
 
@@ -86,7 +86,10 @@ This interactive database website was developed with assistance from [Claude Cod
 
 If you use this database in your research, please cite our paper:
 
-[Citation format will be added upon publication]
+> **Shumate J, Rozenblit E, Flathers M, Larrauri C, Hau C, Xia W, Torous E, Torous J**
+> Governing AI in Mental Health: 50-State Legislative Review
+> *JMIR Ment Health* 2025;12:e80739
+> DOI: [10.2196/80739](https://doi.org/10.2196/80739) | URL: [https://mental.jmir.org/2025/1/e80739](https://mental.jmir.org/2025/1/e80739)
 
 ## License
 
